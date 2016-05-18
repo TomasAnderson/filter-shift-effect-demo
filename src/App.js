@@ -7,7 +7,7 @@ var allColors = [
 ];
 
 var names = [
-	'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k'
+	'dark blue', 'red', 'dark green', 'light green', 'yellow', 'red', 'dark blue', 'dark green', 'green', 'yellow', 'red'
 ];
 
 var count = 11;
@@ -19,27 +19,35 @@ var layout = range(count).map(function (n) {
 	 var col = n % 3;
 	 return [width * col, height * row]
 });
+var reinsert = function (oldOrder, value) {
+	var grids = oldOrder.filter(function (_, key) {
+		if (value === '') {
+			return true;
+		} else {
+			return names[key].indexOf(value) >= 0;
+		}
+	}.bind(this));
+	return grids;
+};
 
 var App = React.createClass({
 	getInitialState: function() {
 		return {
 			order: range(count),
+			filteredOrder: range(count),
 			value: ''
 		};
 	},
 	handleChange: function (e) {
+		 var value = e.target.value;
+		 var newOrder = reinsert(this.state.order, value);
 		 this.setState({
-		 	value: e.target.value
+		 	value: value,
+		 	filteredOrder: newOrder
 		 });
 	},
 	render: function () {
-		var grids = this.state.order.filter(function (_, key) {
-					if (this.state.value === '') {
-						return true;
-					} else {
-						return names[key] === this.state.value;
-					}
-				}.bind(this));
+		console.log(this.state.filteredOrder);
 		return (
 			<div className="demo">
 	      <form className="filter">
@@ -51,23 +59,29 @@ var App = React.createClass({
 	        />
 	      </form>
 	      <div className="grids">
-				{grids.map(function (index, key) {
-					var scale = 1;
-					var visualPosition = this.state.order.indexOf(index);
-					var translateX = layout[visualPosition][0];
-					var translateY = layout[visualPosition][1];
+				{this.state.order.map(function (index, key) {
+					var style = {};			
+			 		if (this.state.filteredOrder.indexOf(index) < 0) {
+			 			style.visibility = 'hidden';
+			 		} else {
+						var scale = 1;
+						var visualPosition = this.state.filteredOrder.indexOf(index);
+						var translateX = layout[visualPosition][0];
+						var translateY = layout[visualPosition][1];
+						var style = {
+				 			backgroundColor: allColors[index],
+				 			transform: `translate3d(${translateX}px, ${translateY}px, 0) scale(${scale})`
+				 		};			 
+			 		}
 					 return (
 					 	<div
 					 		className="ball"
 						 	key={key}
-					 		style={{
-					 			backgroundColor: allColors[index],
-					 			transform: `translate3d(${translateX}px, ${translateY}px, 0) scale(${scale})`
-					 		}}
+					 		style={style}
 					 	>
 					 	<span className="number" style={{visibility: 'hidden'}}>{names[key]}</span>
 					 	</div>
-				)}.bind(this))}
+				);}.bind(this))}
 				</div>
 			</div>
 		) 
