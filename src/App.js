@@ -19,12 +19,28 @@ var layout = range(count).map(function (n) {
 var App = React.createClass({
 	getInitialState: function() {
 		return {
-			order: range(count)
+			order: range(count),
+			value: ''
 		};
+	},
+	handleChange: function (e) {
+		 this.setState({
+		 	value: e.target.value
+		 });
 	},
 	render: function () {
 		return (
 			<div className="demo">
+	      <form className="filter">
+	        <input
+	          className="filter-input"
+	          autoFocus={false}
+	          placeholder="filter out cards"
+	          onChange={this.handleChange}
+	          value={this.state.value}
+	        />
+	      </form>
+	      <div className="grids">
 				{this.state.order.map(function (_, key) {
 					var scale = 1;
 					var visualPosition = this.state.order.indexOf(key);
@@ -42,6 +58,7 @@ var App = React.createClass({
 					 	<span className="number" style={{visibility: 'hidden'}}>{key}</span>
 					 	</div>
 				)}.bind(this))}
+				</div>
 			</div>
 		) 
 	}
