@@ -1,10 +1,16 @@
 var React = require('react');
 var range = require('lodash.range');
+var Motion = require('react-motion').Motion;
+var spring = require('react-motion').spring;
 
 var allColors = [
   '#456990', '#EF767A',  '#49BEAA', '#49DCB1', '#EEB868', '#EF767A', '#456990',
   '#49BEAA', '#49DCB1', '#EEB868', '#EF767A',
 ];
+
+var springSetting1 = {stiffness: 180, damping: 10};
+var springSetting2 = {stiffness: 120, damping: 17};
+
 
 var names = [
 	'dark blue', 'red', 'dark green', 'light green', 'yellow', 'red', 'dark blue', 'dark green', 'green', 'yellow', 'red'
@@ -47,7 +53,6 @@ var App = React.createClass({
 		 });
 	},
 	render: function () {
-		console.log(this.state.filteredOrder);
 		return (
 			<div className="demo">
 	      <form className="filter">
@@ -62,25 +67,46 @@ var App = React.createClass({
 				{this.state.order.map(function (index, key) {
 					var style = {};			
 			 		if (this.state.filteredOrder.indexOf(index) < 0) {
-			 			style.visibility = 'hidden';
+						var visualPosition = this.state.order.indexOf(index);
+						var x = layout[visualPosition][0];
+						var y = layout[visualPosition][1];
+			 			style = {
+			 				scale: spring(0, springSetting2),
+			 				translateX: x,
+			 				translateY: y
+			 			};
 			 		} else {
-						var scale = 1;
 						var visualPosition = this.state.filteredOrder.indexOf(index);
-						var translateX = layout[visualPosition][0];
-						var translateY = layout[visualPosition][1];
-						var style = {
-				 			backgroundColor: allColors[index],
-				 			transform: `translate3d(${translateX}px, ${translateY}px, 0) scale(${scale})`
-				 		};			 
+						var x = layout[visualPosition][0];
+						var y = layout[visualPosition][1];
+			 			style = {
+			 				scale: spring(1, springSetting2),
+			 				translateX: spring(x, springSetting2),
+			 				translateY: spring(y, springSetting2)
+			 			};
+	 
 			 		}
 					 return (
-					 	<div
-					 		className="ball"
-						 	key={key}
-					 		style={style}
-					 	>
-					 	<span className="number" style={{visibility: 'hidden'}}>{names[key]}</span>
-					 	</div>
+					 	<Motion key={key} style={style}>
+					 		{function (style) {
+					 			var scale = style.scale;
+					 			var translateX = style.translateX; 
+					 			var translateY = style.translateY; 
+					 			return (
+								 	<div
+								 		className="ball"
+									 	key={key}
+								 		style={{
+								 			backgroundColor: allColors[index],
+	                    WebkitTransform: `translate3d(${translateX}px, ${translateY}px, 0) scale(${scale})`,
+	                    transform: `translate3d(${translateX}px, ${translateY}px, 0) scale(${scale})`,
+								 		}}
+								 	>
+								 	<span className="number" style={{visibility: 'hidden'}}>{names[key]}</span>
+								 	</div>
+								 );
+					 		}}
+						</Motion>
 				);}.bind(this))}
 				</div>
 			</div>
