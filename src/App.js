@@ -6,6 +6,10 @@ var allColors = [
   '#49BEAA', '#49DCB1', '#EEB868', '#EF767A',
 ];
 
+var names = [
+	'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k'
+];
+
 var count = 11;
 var width = 70;
 var height = 90;
@@ -29,6 +33,13 @@ var App = React.createClass({
 		 });
 	},
 	render: function () {
+		var grids = this.state.order.filter(function (_, key) {
+					if (this.state.value === '') {
+						return true;
+					} else {
+						return names[key] === this.state.value;
+					}
+				}.bind(this));
 		return (
 			<div className="demo">
 	      <form className="filter">
@@ -37,13 +48,12 @@ var App = React.createClass({
 	          autoFocus={false}
 	          placeholder="filter out cards"
 	          onChange={this.handleChange}
-	          value={this.state.value}
 	        />
 	      </form>
 	      <div className="grids">
-				{this.state.order.map(function (_, key) {
+				{grids.map(function (index, key) {
 					var scale = 1;
-					var visualPosition = this.state.order.indexOf(key);
+					var visualPosition = this.state.order.indexOf(index);
 					var translateX = layout[visualPosition][0];
 					var translateY = layout[visualPosition][1];
 					 return (
@@ -51,11 +61,11 @@ var App = React.createClass({
 					 		className="ball"
 						 	key={key}
 					 		style={{
-					 			backgroundColor: allColors[key],
+					 			backgroundColor: allColors[index],
 					 			transform: `translate3d(${translateX}px, ${translateY}px, 0) scale(${scale})`
 					 		}}
 					 	>
-					 	<span className="number" style={{visibility: 'hidden'}}>{key}</span>
+					 	<span className="number" style={{visibility: 'hidden'}}>{names[key]}</span>
 					 	</div>
 				)}.bind(this))}
 				</div>
