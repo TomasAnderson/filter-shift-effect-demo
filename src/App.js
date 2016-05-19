@@ -49,6 +49,39 @@ var App = React.createClass({
 		}.bind(this);
 	},
 
+	_getStyles: function(index) {
+		var style = {};	
+		var count = this.state.grids.length;
+		var width = 70;
+		var height = 90;
+		var column = 3;
+		var layout = range(this.state.grids.length).map(function (n) {
+			 var row = Math.floor(n / column);
+			 var col = n % column;
+			 return [width * col, height * row]
+		});
+ 		if (this.state.filteredOrder.indexOf(index) < 0) {
+			var visualPosition = this.state.order.indexOf(index);
+			var x = layout[visualPosition][0];
+			var y = layout[visualPosition][1];
+ 			style = {
+ 				scale: spring(0, springSetting2),
+ 				translateX: x,
+ 				translateY: y
+ 			};
+ 		} else {
+			var visualPosition = this.state.filteredOrder.indexOf(index);
+			var x = layout[visualPosition][0];
+			var y = layout[visualPosition][1];
+ 			style = {
+ 				scale: spring(1, springSetting2),
+ 				translateX: spring(x, springSetting2),
+ 				translateY: spring(y, springSetting2)
+ 			};
+ 		}
+ 		return style;
+	},
+
 	render: function () {
 		return (
 			<div className="demo">
@@ -62,38 +95,8 @@ var App = React.createClass({
 	      </form>
 	      <div className="grids">
 				{this.state.order.map(function (index, key) {
-					var style = {};	
-					var count = this.state.grids.length;
-					var width = 70;
-					var height = 90;
-					var column = 3;
-					var layout = range(this.state.grids.length).map(function (n) {
-						 var row = Math.floor(n / column);
-						 var col = n % column;
-						 return [width * col, height * row]
-					});
-
-			 		if (this.state.filteredOrder.indexOf(index) < 0) {
-						var visualPosition = this.state.order.indexOf(index);
-						var x = layout[visualPosition][0];
-						var y = layout[visualPosition][1];
-			 			style = {
-			 				scale: spring(0, springSetting2),
-			 				translateX: x,
-			 				translateY: y
-			 			};
-			 		} else {
-						var visualPosition = this.state.filteredOrder.indexOf(index);
-						var x = layout[visualPosition][0];
-						var y = layout[visualPosition][1];
-			 			style = {
-			 				scale: spring(1, springSetting2),
-			 				translateX: spring(x, springSetting2),
-			 				translateY: spring(y, springSetting2)
-			 			};
-			 		}
 					 return (
-					 	<Motion key={key} style={style}>
+					 	<Motion key={key} style={this._getStyles(index)}>
 					 		{function (style) {
 					 			var scale = style.scale;
 					 			var translateX = style.translateX; 
