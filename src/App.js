@@ -1,4 +1,5 @@
 var React = require('react');
+var ExpandableDiv = require('./ExpandableDiv.js');
 var range = require('lodash.range');
 var Motion = require('react-motion').Motion;
 var spring = require('react-motion').spring;
@@ -93,17 +94,16 @@ var App = React.createClass({
 					 			var translateX = style.translateX; 
 					 			var translateY = style.translateY; 
 					 			return (
-								 	<div
-								 		className="ball"
-									 	key={key}
+								 	<ExpandableDiv
+								 		key={key}
+								 		names={names}
 								 		style={{
 								 			backgroundColor: allColors[index],
 	                    WebkitTransform: `translate3d(${translateX}px, ${translateY}px, 0) scale(${scale})`,
-	                    transform: `translate3d(${translateX}px, ${translateY}px, 0) scale(${scale})`,
+	                    transform: `translate3d(${translateX}px, ${translateY}px, 0) scale(${scale})`,								 			
 								 		}}
 								 	>
-								 	<span className="number" style={{visibility: 'hidden'}}>{names[key]}</span>
-								 	</div>
+								 	</ExpandableDiv>
 								 );
 					 		}}
 						</Motion>
