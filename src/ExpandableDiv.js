@@ -5,10 +5,10 @@ var ExpandableDiv = React.createClass({
 		return (
 		 	<div
 		 		className="ball"
-			 	key={this.props.key}
 		 		style={this.props.style}
+		 		onClick={this.props.handleRemove}
 		 	>
-			 	<span className="number" style={{visibility: 'hidden'}}>{this.props.names[this.props.key]}</span>
+			 	<span className="number" style={{visibility: 'hidden'}}>{this.props.name}</span>
 		 	</div>	
 		);	  
 	}
